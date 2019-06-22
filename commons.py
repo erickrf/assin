@@ -46,7 +46,7 @@ def read_xml(filename, need_labels):
         t = xml_pair.find('t').text
         h = xml_pair.find('h').text
         attribs = dict(xml_pair.items())
-        id_ = int(attribs['id'])
+        id_ = attribs['id']
 
         if 'entailment' in attribs:
             ent_string = attribs['entailment'].lower()
