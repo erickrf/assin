@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import division
+from __future__ import division, unicode_literals
 
 """
 Script implementing the overlap baseline for the ASSIN shared task.
@@ -29,7 +29,7 @@ def tokenize_sentence(text):
 
     :param text: text to be tokenized, as a string
     '''
-    tokenizer_regexp = ur'''(?ux)
+    tokenizer_regexp = r'''(?ux)
     # the order of the patterns is important!!
     (?:[^\W\d_]\.)+|                  # one letter abbreviations, e.g. E.U.A.
     \d+(?:[.,]\d+)*(?:[.,]\d+)|       # numbers in format 999.999.999,99999
