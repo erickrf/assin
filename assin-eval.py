@@ -36,7 +36,7 @@ def eval_rte(pairs_gold, pairs_sys):
     print('RTE evaluation')
     print('Accuracy\tMacro F1')
     print('--------\t--------')
-    print('{:8.2%}\t{:8.2f}'.format(accuracy, macro_f1))
+    print('{:8.2%}\t{:8.3f}'.format(accuracy, macro_f1))
 
 def eval_similarity(pairs_gold, pairs_sys):
     '''
@@ -59,16 +59,21 @@ def eval_similarity(pairs_gold, pairs_sys):
     print('Similarity evaluation')
     print('Pearson\t\tMean Squared Error')
     print('-------\t\t------------------')
-    print('{:7.2f}\t\t{:18.2f}'.format(pearson, mse))
+    print('{:7.3f}\t\t{:18.2f}'.format(pearson, mse))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('gold_file', help='Gold file')
     parser.add_argument('system_file', help='File produced by a system')
+    parser.add_argument(
+        '-f', help='Force evaluation when some values are not set. Missing '
+                    'entailment labels are considered wrong and missing '
+                    'similarity values are replaced by 0',
+        dest='force', action='store_true')
     args = parser.parse_args()
     
-    pairs_gold = read_xml(args.gold_file, True)
-    pairs_sys = read_xml(args.system_file, True)
+    pairs_gold = read_xml(args.gold_file, True, force=args.force)
+    pairs_sys = read_xml(args.system_file, True, force=args.force)
     
     eval_rte(pairs_gold, pairs_sys)
     eval_similarity(pairs_gold, pairs_sys)

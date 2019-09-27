@@ -5,11 +5,13 @@ Common structures and functions used by other scripts.
 """
 
 from xml.etree import cElementTree as ET
+import logging
 
 
 str_to_entailment = {'none': 0,
                      'entailment': 1,
                      'paraphrase': 2}
+wrong_label_value = 3
 entailment_to_str = {v: k for k, v in str_to_entailment.items()}
 
 class Pair(object):
@@ -32,7 +34,7 @@ class Pair(object):
         self.similarity = similarity
 
 
-def read_xml(filename, need_labels):
+def read_xml(filename, need_labels, force=False):
     '''
     Read an RTE XML file and return a list of Pair objects.
     :param filename: name of the file to read
@@ -48,22 +50,23 @@ def read_xml(filename, need_labels):
         attribs = dict(xml_pair.items())
         id_ = attribs['id']
 
-        if 'entailment' in attribs:
+        if 'entailment' in attribs and attribs['entailment']:
             ent_string = attribs['entailment'].lower()
 
             try:
                 ent_value = str_to_entailment[ent_string]
-            except ValueError:
+            except KeyError:
                 msg = 'Unexpected value for attribute "entailment" at pair {}: {}'
-                raise ValueError(msg.format(id_, ent_string))
+                logging.error(msg.format(id_, ent_string))
+                ent_value = wrong_label_value
 
         else:
-            ent_value = None
+            ent_value = wrong_label_value if force else None
 
-        if 'similarity' in attribs:
+        if 'similarity' in attribs and attribs['similarity']:
             similarity = float(attribs['similarity'])
         else:
-            similarity = None
+            similarity = 0. if force else None
 
         if need_labels and similarity is None and ent_value is None:
             msg = 'Missing both entailment and similarity values for pair {}'.format(id_)
