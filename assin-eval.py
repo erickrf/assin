@@ -29,7 +29,9 @@ def eval_rte(pairs_gold, pairs_sys):
     
     gold_values = np.array([p.entailment for p in pairs_gold])
     sys_values = np.array([p.entailment for p in pairs_sys])
-    macro_f1 = f1_score(gold_values, sys_values, average='macro')
+    label_set = set(gold_values)
+    macro_f1 = f1_score(gold_values, sys_values, average='macro', 
+                        labels=list(label_set))
     accuracy = (gold_values == sys_values).sum() / len(gold_values)
     
     print()
