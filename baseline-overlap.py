@@ -16,33 +16,9 @@ It produces an XML file as the output, which can be evaluated with the
 import argparse
 import numpy as np
 from xml.etree import cElementTree as ET
-from nltk.tokenize import RegexpTokenizer
 from sklearn.linear_model import LinearRegression, LogisticRegression
 
-from commons import read_xml, entailment_to_str
-
-
-def tokenize_sentence(text):
-    '''
-    Tokenize the given sentence in Portuguese. The tokenization is done in conformity
-    with Universal Treebanks (at least it attempts so).
-
-    :param text: text to be tokenized, as a string
-    '''
-    tokenizer_regexp = r'''(?ux)
-    # the order of the patterns is important!!
-    (?:[^\W\d_]\.)+|                  # one letter abbreviations, e.g. E.U.A.
-    \d+(?:[.,]\d+)*(?:[.,]\d+)|       # numbers in format 999.999.999,99999
-    \w+(?:\.(?!\.|$))?|               # words with numbers (including hours as 12h30),
-                                      # followed by a single dot but not at the end of sentence
-    \d+(?:[-\\/]\d+)*|                # dates. 12/03/2012 12-03-2012
-    \$|                               # currency sign
-    -+|                               # any sequence of dashes
-    \S                                # any non-space character
-    '''
-    tokenizer = RegexpTokenizer(tokenizer_regexp)
-
-    return tokenizer.tokenize(text)
+from commons import read_xml, entailment_to_str, tokenize_sentence
 
 
 def extract_features(pairs):
